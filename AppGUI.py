@@ -5,21 +5,6 @@ from PyQt6.QtCore import QDateTime, Qt
 from PyQt6.QtGui import QPalette, QColor
 from ReadLogs import ReadLogs
 
-WINDOW_TITLE = "Log browser"
-LOAD_FILE_BUTTON = "Load_file"
-DATETIME_FORMAT = "MMM dd hh:mm:ss"
-FILTER_BUTTON = "Filter"
-LOG_DETAILS_LABEL = "Selected log details"
-LOG_DETAILS_LABEL_STYLE = "font-weight: bold;"
-HOST_LABEL = "Host name:"
-DATE_LABEL = "Date: "
-ENDPOINT_LABEL = "Application: "
-RESPONSE_LABEL = "Pid number: "
-SIZE_LABEL = "Message: "
-PREVIOUS_BUTTON = "Previous"
-NEXT_BUTTON = "Next"
-APP_STYLE = "Fusion"
-
 
 class LogViewer(QMainWindow):
     def __init__(self, read_logs):
@@ -28,7 +13,7 @@ class LogViewer(QMainWindow):
         self.read_logs = read_logs
 
         # Tworzę okno aplikacji
-        self.setWindowTitle(WINDOW_TITLE)
+        self.setWindowTitle("Log browser")
         self.setMinimumWidth(800)
 
         # Dodaję centralny widget
@@ -44,7 +29,7 @@ class LogViewer(QMainWindow):
         self.file_path_label.setReadOnly(True)
         self.top_layout.addWidget(self.file_path_label)
 
-        self.load_button = QPushButton(LOAD_FILE_BUTTON)
+        self.load_button = QPushButton("Load_file")
         self.load_button.clicked.connect(self.load_logs)
         self.top_layout.addWidget(self.load_button)
 
@@ -61,19 +46,19 @@ class LogViewer(QMainWindow):
         # Tworzę filtry dla logów jako horyzontalny layout
         self.filter_layout = QHBoxLayout()
         self.start_datetime = QDateTimeEdit()
-        self.start_datetime.setDisplayFormat(DATETIME_FORMAT)
+        self.start_datetime.setDisplayFormat("MMM dd hh:mm:ss")
         self.start_datetime.setDateTime(QDateTime.currentDateTime())
         self.filter_layout.addWidget(self.start_datetime)
 
         self.end_datetime = QDateTimeEdit()
-        self.end_datetime.setDisplayFormat(DATETIME_FORMAT)
+        self.end_datetime.setDisplayFormat("MMM dd hh:mm:ss")
         self.end_datetime.setDateTime(QDateTime.currentDateTime())
         self.filter_layout.addWidget(self.end_datetime)
 
         self.left_layout.addLayout(self.filter_layout)
 
         # Tworzę przycisk do filtrowania logów
-        self.filter_button = QPushButton(FILTER_BUTTON)
+        self.filter_button = QPushButton("Filter")
         self.filter_button.clicked.connect(self.filter_logs)
 
         self.left_layout.addWidget(self.filter_button)
@@ -88,36 +73,36 @@ class LogViewer(QMainWindow):
         self.middle_layout.addLayout(self.right_layout)
 
         # Dodaję wszystkie potrzebne informacje jako widgety do right_layout
-        self.log_details_label = QLabel(LOG_DETAILS_LABEL)
+        self.log_details_label = QLabel("Selected log details")
         self.log_details_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.log_details_label.setStyleSheet(LOG_DETAILS_LABEL_STYLE)
+        self.log_details_label.setStyleSheet("font-weight: bold;")
         self.right_layout.addWidget(self.log_details_label)
 
-        self.host_label = QLabel(HOST_LABEL)
+        self.host_label = QLabel("Host name:")
         self.right_layout.addWidget(self.host_label)
         self.host_view = QLineEdit()
         self.host_view.setReadOnly(True)
         self.right_layout.addWidget(self.host_view)
 
-        self.date_label = QLabel(DATE_LABEL)
+        self.date_label = QLabel("Date: ")
         self.right_layout.addWidget(self.date_label)
         self.date_view = QLineEdit()
         self.date_view.setReadOnly(True)
         self.right_layout.addWidget(self.date_view)
 
-        self.endpoint_label = QLabel(ENDPOINT_LABEL)
+        self.endpoint_label = QLabel("Application: ")
         self.right_layout.addWidget(self.endpoint_label)
         self.endpoint_view = QLineEdit()
         self.endpoint_view.setReadOnly(True)
         self.right_layout.addWidget(self.endpoint_view)
 
-        self.response_label = QLabel(RESPONSE_LABEL)
+        self.response_label = QLabel("Pid number: ")
         self.right_layout.addWidget(self.response_label)
         self.response_view = QLineEdit()
         self.response_view.setReadOnly(True)
         self.right_layout.addWidget(self.response_view)
 
-        self.size_label = QLabel(SIZE_LABEL)
+        self.size_label = QLabel("Message: ")
         self.right_layout.addWidget(self.size_label)
         self.size_view = QLineEdit()
         self.size_view.setReadOnly(True)
@@ -128,12 +113,12 @@ class LogViewer(QMainWindow):
         self.main_layout.addLayout(self.bottom_layout)
 
         # Tworzę przyciski next i previous
-        self.prev_button = QPushButton(PREVIOUS_BUTTON)
+        self.prev_button = QPushButton("Previous")
         self.prev_button.clicked.connect(self.prev_log)
         self.prev_button.setEnabled(False)
         self.bottom_layout.addWidget(self.prev_button)
 
-        self.next_button = QPushButton(NEXT_BUTTON)
+        self.next_button = QPushButton("Next")
         self.next_button.clicked.connect(self.next_log)
         self.next_button.setEnabled(False)
         self.bottom_layout.addWidget(self.next_button)
@@ -151,7 +136,7 @@ class LogViewer(QMainWindow):
     def update_logs_list(self, logs):
         self.logs_list.clear()
         for log in logs:
-            short_log = log[:55] + "..." if len(log) > 55 else log
+            short_log = log[:60] + "..." if len(log) > 55 else log
             item = QListWidgetItem(short_log)
             item.full_log = log
             self.logs_list.addItem(item)
@@ -169,8 +154,8 @@ class LogViewer(QMainWindow):
             self.update_nav_buttons()
 
     def filter_logs(self):
-        start_datetime = self.start_datetime.dateTime().toString(DATETIME_FORMAT)
-        end_datetime = self.end_datetime.dateTime().toString(DATETIME_FORMAT)
+        start_datetime = self.start_datetime.dateTime().toString("MMM dd hh:mm:ss")
+        end_datetime = self.end_datetime.dateTime().toString("MMM dd hh:mm:ss")
         filtered_logs = self.read_logs.filter_logs(self.all_logs, start_datetime, end_datetime)
         self.update_logs_list(filtered_logs)
 
@@ -192,7 +177,7 @@ class LogViewer(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setStyle(QStyleFactory.create(APP_STYLE))
+    app.setStyle(QStyleFactory.create("Fusion"))
     dark_palette = QPalette()
     dark_palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
     dark_palette.setColor(QPalette.ColorRole.WindowText, Qt.GlobalColor.white)
